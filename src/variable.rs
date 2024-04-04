@@ -2,9 +2,9 @@ use crate::grad::Gradient;
 use crate::tape::Tape;
 
 pub struct Variable<'a> {
-    tape: Option<&'a Tape>,
-    index: usize,
-    value: f64,
+    pub(crate) tape: Option<&'a Tape>,
+    pub(crate) index: usize,
+    pub value: f64,
 }
 
 impl<'a> Variable<'a> {
@@ -12,6 +12,14 @@ impl<'a> Variable<'a> {
         Self {
             tape: None,
             index: 0,
+            value,
+        }
+    }
+
+    pub(crate) fn new(t: &'a Tape, index: usize, value: f64) -> Self {
+        Self {
+            tape: Some(t),
+            index: index,
             value: value,
         }
     }

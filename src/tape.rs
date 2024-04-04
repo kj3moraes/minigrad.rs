@@ -31,12 +31,8 @@ impl Tape {
     }
 
     pub fn var(&self, value: f64) -> Variable {
-        Variable
-            tape: Some(&self),
-            index: self.push_leaf(),
-            value: value,
-     }
-    
+        Variable::new(&self, self.push_leaf(), value)
+    }
 
     pub fn push_leaf(&self) -> usize {
         let mut nodes = self.nodes.borrow_mut();

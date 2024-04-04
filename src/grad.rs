@@ -10,6 +10,6 @@ impl Gradient {
     }
 
     pub fn wrt(&self, var: &Variable) -> f64 {
-        self.derivatives[var.index()]
+        self.derivatives[var.index]
     }
 }
