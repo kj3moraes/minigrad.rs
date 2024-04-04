@@ -2,6 +2,7 @@ use std::cell::RefCell;
 
 use crate::variable::Variable;
 
+#[derive(Clone, Copy, Debug)]
 pub(crate) struct Node {
     pub(crate) weight: [f64; 2],
     pub(crate) deps: [usize; 2],
