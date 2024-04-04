@@ -78,7 +78,7 @@ mod tests {
         let t = Tape::new();
         let x = t.var(0.5);
         let y = t.var(4.2);
-        let z = x * y;
+        let z = (x * y).relu();
         let grad = z.grad();
 
         // Check that the calculated value is correct

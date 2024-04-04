@@ -1,6 +1,5 @@
-use std::cell::RefCell;
-
 use crate::variable::Variable;
+use std::{cell::RefCell, fmt::Debug};
 
 #[derive(Clone, Copy, Debug)]
 pub(crate) struct Node {
