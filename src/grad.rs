@@ -5,13 +5,11 @@ pub struct Gradient {
 }
 
 impl Gradient {
-    pub fn from(derivatives: &[f64]) -> Self {
-        Self {
-            derivatives: derivatives.to_vec(),
-        }
+    pub fn from(derivatives: Vec<f64>) -> Self {
+        Self { derivatives }
     }
 
     pub fn wrt(&self, var: &Variable) -> f64 {
-        self.derivatives[var.index()]
+        self.derivatives[var.index]
     }
 }
