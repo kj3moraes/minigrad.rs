@@ -78,7 +78,7 @@ mod tests {
         let t = Tape::new();
         let x = t.var(0.5);
         let y = t.var(4.2);
-        let z = (x * y).relu();
+        let z = x * y;
         let grad = z.grad();
 
         // Check that the calculated value is correct
@@ -86,5 +86,20 @@ mod tests {
         // Assert that the gradients calculated are correct as well.
         assert!((grad.wrt(&x) - y.value).abs() <= 1e-15);
         assert!((grad.wrt(&y) - x.value).abs() <= 1e-15);
+    }
+
+    #[test]
+    fn test_x_plus_y() {
+        let t = Tape::new();
+        let x = t.var(0.5);
+        let y = t.var(4.0);
+        let z = x + y;
+        let grad = z.grad();
+
+        // Check that the calculated value is correct
+        assert!((z.value - 4.5).abs() <= 1e-15);
+        // Assert that the gradients calculated are correct as well.
+        assert!((grad.wrt(&x) - 1.0).abs() <= 1e-15);
+        assert!((grad.wrt(&y) - 1.0).abs() <= 1e-15);
     }
 }
