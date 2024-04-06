@@ -1,16 +1,17 @@
 use crate::variable::Variable;
+use candle_core::Tensor;
 
 #[derive(Debug)]
 pub struct Gradient {
-    derivatives: Vec<f64>,
+    derivatives: Vec<Tensor>,
 }
 
 impl Gradient {
-    pub fn from(derivatives: Vec<f64>) -> Self {
+    pub fn from(derivatives: Vec<Tensor>) -> Self {
         Self { derivatives }
     }
 
-    pub fn wrt(&self, var: &Variable) -> f64 {
-        self.derivatives[var.index]
+    pub fn wrt(&self, var: &Variable) -> &Tensor {
+        &self.derivatives[var.index]
     }
 }
