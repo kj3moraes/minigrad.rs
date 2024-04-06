@@ -2,3 +2,6 @@
 name = "minigrad"
 version = "0.1.0"
 edition = "2021"
+
+[dependencies]
+tensor-rs = "0.5.9"
