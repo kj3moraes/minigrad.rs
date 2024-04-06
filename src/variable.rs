@@ -104,6 +104,24 @@ impl<'a> Variable<'a> {
             new_value,
         )
     }
+
+    pub fn sin(&self) -> Variable {
+        Variable::new(
+            self.tape.unwrap(),
+            self.tape.unwrap().push_unary(self.value.cos(), self.index),
+            self.value.sin(),
+        )
+    }
+
+    pub fn cos(&self) -> Variable {
+        Variable::new(
+            self.tape.unwrap(),
+            self.tape
+                .unwrap()
+                .push_unary(-1.0 * self.value.sin(), self.index),
+            self.value.cos(),
+        )
+    }
 }
 
 #[cfg(test)]
@@ -138,5 +156,20 @@ mod tests {
         // Assert that the gradients calculated are correct as well.
         assert!((grad.wrt(&x) - 1.0).abs() <= 1e-15);
         assert!((grad.wrt(&y) - 1.0).abs() <= 1e-15);
+    }
+
+    #[test]
+    fn test_multiple_operations() {
+        let t = Tape::new();
+        let x = t.var(0.5);
+        let y = t.var(4.2);
+        let z = x * y - x.sin();
+        let grad = z.grad();
+
+        // Check that the calculated value is correct
+        assert!((z.value - 1.620574461395797).abs() <= 1e-15);
+        // Assert that the gradients calculated are correct as well.
+        assert!((grad.wrt(&x) - (y - x.cos()).value).abs() <= 1e-15);
+        assert!((grad.wrt(&y) - x.value).abs() <= 1e-15);
     }
 }
