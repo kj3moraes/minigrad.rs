@@ -122,6 +122,16 @@ impl<'a> Variable<'a> {
             self.value.cos(),
         )
     }
+
+    pub fn pow(&self, power: f64) -> Variable {
+        Variable::new(
+            self.tape.unwrap(),
+            self.tape
+                .unwrap()
+                .push_unary(power * self.value.powf(power - 1.0), self.index),
+            self.value.powf(power),
+        )
+    }
 }
 
 #[cfg(test)]
@@ -171,5 +181,18 @@ mod tests {
         // Assert that the gradients calculated are correct as well.
         assert!((grad.wrt(&x) - (y - x.cos()).value).abs() <= 1e-15);
         assert!((grad.wrt(&y) - x.value).abs() <= 1e-15);
+    }
+
+    #[test]
+    fn test_power() {
+        let t = Tape::new();
+        let x = t.var(2.0);
+        let z = x.pow(3.0);
+        let grad = z.grad();
+
+        // Check that the calculated value is correct
+        assert!((z.value - 8.0).abs() <= 1e-15);
+        // Assert that the gradients calculated are correct as well.
+        assert!((grad.wrt(&x) - (3.0 * (x.pow(2.0))).value).abs() <= 1e-15);
     }
 }
