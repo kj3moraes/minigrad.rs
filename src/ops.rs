@@ -25,3 +25,27 @@ impl<'a> Mul for Variable<'a> {
         Variable::new(self.tape.unwrap(), position, new_value)
     }
 }
+
+// Implementation for f64 * Variable
+impl<'a> Mul<Variable<'a>> for f64 {
+    type Output = Variable<'a>;
+    fn mul(self, rhs: Variable<'a>) -> Self::Output {
+        let len = rhs.tape.unwrap().len();
+        let position = rhs.tape.unwrap().push_binary(0.0, len, self, rhs.index);
+        let new_value = self * rhs.value;
+        Variable::new(rhs.tape.unwrap(), position, new_value)
+    }
+}
+
+impl<'a> Mul<Variable<'a>> for i32 {
+    type Output = Variable<'a>;
+    fn mul(self, rhs: Variable<'a>) -> Self::Output {
+        let len = rhs.tape.unwrap().len();
+        let position = rhs
+            .tape
+            .unwrap()
+            .push_binary(0.0, len, self as f64, rhs.index);
+        let new_value = self as f64 * rhs.value;
+        Variable::new(rhs.tape.unwrap(), position, new_value)
+    }
+}

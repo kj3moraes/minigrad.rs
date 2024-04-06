@@ -39,7 +39,7 @@ impl Into<Tensor> for Value {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Variable<'a> {
     pub(crate) tape: Option<&'a Tape>,
     pub(crate) index: usize,
@@ -115,14 +115,14 @@ mod tests {
         let t = Tape::new();
         let x = t.var(0.5);
         let y = t.var(4.2);
-        let z = x * y;
+        let z = 2.0 * x * y;
         let grad = z.grad();
 
         // Check that the calculated value is correct
-        assert!((z.value - 2.1).abs() <= 1e-15);
+        assert!((z.value - 4.2).abs() <= 1e-15);
         // Assert that the gradients calculated are correct as well.
-        assert!((grad.wrt(&x) - y.value).abs() <= 1e-15);
-        assert!((grad.wrt(&y) - x.value).abs() <= 1e-15);
+        assert!((grad.wrt(&x) - 2.0 * y.value).abs() <= 1e-15);
+        assert!((grad.wrt(&y) - 2.0 * x.value).abs() <= 1e-15);
     }
 
     #[test]

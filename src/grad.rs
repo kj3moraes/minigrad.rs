@@ -1,5 +1,6 @@
 use crate::variable::Variable;
 
+#[derive(Debug)]
 pub struct Gradient {
     derivatives: Vec<f64>,
 }
