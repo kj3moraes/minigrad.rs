@@ -1,43 +1,6 @@
 use crate::activation::ReLU;
 use crate::grad::Gradient;
 use crate::tape::Tape;
-use tensor_rs::tensor::Tensor;
-
-#[derive(Clone, PartialEq)]
-pub enum Value {
-    Scalar(f64),
-    Vector(Tensor),
-}
-
-impl From<Tensor> for Value {
-    fn from(value: Tensor) -> Self {
-        Self::Vector(value)
-    }
-}
-
-impl From<f64> for Value {
-    fn from(value: f64) -> Self {
-        Self::Scalar(value)
-    }
-}
-
-impl Into<f64> for Value {
-    fn into(self) -> f64 {
-        match self {
-            Self::Scalar(val) => val,
-            Self::Vector(_) => panic!("Cannot convert a tensor to a float"),
-        }
-    }
-}
-
-impl Into<Tensor> for Value {
-    fn into(self) -> Tensor {
-        match self {
-            Self::Scalar(_) => panic!("Cannot convert a float to a tensor"),
-            Self::Vector(tns) => tns,
-        }
-    }
-}
 
 #[derive(Clone, Copy, Debug)]
 pub struct Variable<'a> {
