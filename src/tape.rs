@@ -13,6 +13,7 @@ impl Node {
     }
 }
 
+#[derive(Debug)]
 pub(crate) struct Tape {
     pub(crate) nodes: RefCell<Vec<Node>>,
 }
@@ -44,7 +45,7 @@ impl Tape {
     pub fn push_unary(&self, weight: f64, pos: usize) -> usize {
         let mut nodes = self.nodes.borrow_mut();
         let len = nodes.len();
-        nodes.push(Node::from([weight, 0.0], [pos, 0]));
+        nodes.push(Node::from([weight, 0.0], [pos, len]));
         len
     }
 
