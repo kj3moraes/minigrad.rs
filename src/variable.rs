@@ -317,20 +317,23 @@ mod tests {
                 == 4
         );
     }
-    // #[test]
-    // fn test_x_plus_y() {
-    //     let t = Tape::new();
-    //     let x = t.var(0.5);
-    //     let y = t.var(4.0);
-    //     let z = x + y;
-    //     let grad = z.grad();
 
-    //     // Check that the calculated value is correct
-    //     assert!((z.value - 4.5).abs() <= 1e-15);
-    //     // Assert that the gradients calculated are correct as well.
-    //     assert!((grad.wrt(&x) - 1.0).abs() <= 1e-15);
-    //     assert!((grad.wrt(&y) - 1.0).abs() <= 1e-15);
-    // }
+    #[test]
+    fn test_x_plus_y() {
+        let t = Tape::new();
+        let x = t.var(Tensor::from_slice(&[8.0], (1, 1), &candle_core::Device::Cpu).unwrap());
+        let y = t.var(Tensor::from_slice(&[4.0], (1, 1), &candle_core::Device::Cpu).unwrap());
+        let z = x.clone() + y.clone();
+        let grad = z.grad();
+
+        // Check that the calculated value is correct
+        println!("The z value is {}", z.value);
+        let z_value = z.value.i((0, 0)).unwrap().to_scalar::<f64>().unwrap();
+        assert!((z_value - 12.0) <= 1e-15);
+        // Assert that the gradients calculated are correct as well.
+        assert!((grad.wrt(&x).i((0, 0)).unwrap().to_scalar::<f64>().unwrap() - 1.0) <= 1e-15);
+        assert!((grad.wrt(&y).i((0, 0)).unwrap().to_scalar::<f64>().unwrap() - 1.0) <= 1e-15);
+    }
 
     // #[test]
     // fn test_multiple_operations() {
