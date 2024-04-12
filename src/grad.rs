@@ -3,7 +3,7 @@ use candle_core::Tensor;
 
 #[derive(Debug)]
 pub struct Gradient {
-    derivatives: Vec<Tensor>,
+    pub(crate) derivatives: Vec<Tensor>,
 }
 
 impl Gradient {
