@@ -90,6 +90,7 @@ fn initialize_derivates(derivatives: &mut Vec<Tensor>, tape: &Tape) {
 
     for i in 0..len {
         let node = &nodes[i];
+        println!("The shape is {:?}", node.shape);
         let shape: (usize, usize) = node.shape.clone().try_into().unwrap();
         derivatives.push(Tensor::zeros(shape, candle_core::DType::F64, &Device::Cpu).unwrap());
     }
@@ -110,10 +111,6 @@ impl<'a> Variable<'a> {
 
         let mut derivates: Vec<Tensor> = vec![];
         initialize_derivates(&mut derivates, &self.tape.unwrap());
-
-        // for d in derivates.iter() {
-        //     println!("The shape of the derivative is {:?}", d.shape());
-        // }
 
         // Set the derivative of the current variable wrt itself as 1
         derivates[self.index] = derivates[self.index].ones_like().unwrap();
@@ -136,10 +133,12 @@ impl<'a> Variable<'a> {
             // if y = xw
             // df/dx = x^t df/fy
             let lhs = node.weight[0].t().unwrap().matmul(&deriv).unwrap();
+            println!("The lhs calculated is {}", lhs);
             derivates[node.deps[0]] = (&derivates[node.deps[0]] + lhs.t()).unwrap();
 
             // df/dw = df/fy w^t
             let rhs = deriv.matmul(&node.weight[1].t().unwrap()).unwrap();
+            println!("The rhs calculated is {}", rhs);
             derivates[node.deps[1]] = (&derivates[node.deps[1]] + rhs.t()).unwrap();
         }
 
@@ -159,7 +158,7 @@ impl<'a> Variable<'a> {
     // }
 
     pub fn sum(&self) -> Variable<'a> {
-        let new_value = self.value.sum_all().unwrap();
+        let new_value = self.value.sum_all().unwrap().reshape((1, 1)).unwrap();
         let tape = self.tape.unwrap();
         Variable::new_tensor(
             tape,

@@ -1,3 +1,5 @@
+use candle_core::{DType, Device, Shape, Tensor};
+
 use crate::tape::convert_to_tensor;
 use crate::variable::Variable;
 use std::ops::{Add, Mul, Sub};
@@ -6,10 +8,12 @@ impl<'a> Add for Variable<'a> {
     type Output = Variable<'a>;
     fn add(self, rhs: Self) -> Self::Output {
         let new_value = (&self.value + &rhs.value).unwrap();
+        let n = rhs.value.shape().dims()[1];
+        println!("THe second dimension sizie is {}", n);
         let position = self.tape.unwrap().push_binary(
-            rhs.value.t().unwrap().ones_like().unwrap(),
+            Tensor::from_slice(&[1.0], (1, 1), &candle_core::Device::Cpu).unwrap(),
             self.index,
-            self.value.t().unwrap().ones_like().unwrap(),
+            Tensor::eye(n, DType::F64, &Device::Cpu).unwrap(),
             rhs.index,
             new_value.shape().clone(),
         );
